@@ -47,6 +47,14 @@ class ProductManager {
 
     return false;
   }
+
+addProduct(newProduct) {
+  const nextId = this.products.length > 0 ? Math.max(...this.products.map(product => product.id)) + 1 : 1;
+  newProduct.id = nextId;
+  this.products.push(newProduct);
+  this.saveProducts();
+  return newProduct.id;
+}
 }
 
 const productManager = new ProductManager();
