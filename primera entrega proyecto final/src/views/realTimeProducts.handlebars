@@ -1,0 +1,30 @@
+<!-- views/realTimeProducts.handlebars -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lista de Productos en Tiempo Real</title>
+</head>
+<body>
+    <h1>Lista de Productos en Tiempo Real</h1>
+    <ul id="realTimeList">
+    </ul>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/4.1.3/socket.io.js"></script>
+    <script>
+        const socket = io();
+
+        // Escucha el evento para actualizar la lista en tiempo real
+        socket.on('actualizarProductos', (productos) => {
+            const realTimeList = document.getElementById('realTimeList');
+            realTimeList.innerHTML = '';
+            productos.forEach((producto) => {
+                const listItem = document.createElement('li');
+                listItem.textContent = `${producto.title} - $${producto.price}`;
+                realTimeList.appendChild(listItem);
+            });
+        });
+    </script>
+</body>
+</html>
