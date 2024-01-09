@@ -8,7 +8,7 @@
 </head>
 <body>
     <h1>Lista de Productos en Tiempo Real</h1>
-    <ul id="productList">
+    <ul id="realTimeProductList">
         <!-- Aquí se mostrarán los productos -->
     </ul>
 
@@ -26,15 +26,15 @@
         <button type="submit">Agregar Producto</button>
     </form>
 
-    <script src="https://cdn.socket.io/4.0.1/socket.io.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/4.2.0/socket.io.js"></script>
     <script>
-        // Conectar al servido
+        // Conectar al servidor
         const socket = io();
 
-        // Escuchar el evento para actualizar 
+        // Escuchar el evento para actualizar
         socket.on('actualizarProductos', (productos) => {
-            // Actualizar la lista de productos 
-            const productList = document.getElementById('productList');
+            // Actualizar la lista de productos
+            const productList = document.getElementById('realTimeProductList');
             productList.innerHTML = '';
 
             productos.forEach(producto => {
@@ -44,7 +44,7 @@
             });
         });
 
-        // 
+        // Agregar un nuevo producto
         const addProductForm = document.getElementById('addProductForm');
         addProductForm.addEventListener('submit', (event) => {
             event.preventDefault();
@@ -53,10 +53,10 @@
             const price = document.getElementById('price').value;
             const thumbnail = document.getElementById('thumbnail').value;
 
-            // Enviar el nuevo producto 
+            // Enviar el nuevo producto
             socket.emit('productoNuevo', { title, price, thumbnail });
 
-            // Limpiar el formsd
+            // Limpiar el formulario
             addProductForm.reset();
         });
     </script>
