@@ -27,6 +27,14 @@ app.use(express.static(path.join(__dirname, 'public')));
 
 app.use('/api/products', productRouter);
 app.use('/api/carts', cartsRouter);
+// Agregar un nuevo producto al iniciar la aplicación
+const nuevoProducto = {
+  title: 'Nuevo Producto',
+  price: 99.99,
+  thumbnail: 'someUrl.com',
+};
+const nuevoProductoId = productManager.addProduct(nuevoProducto);
+console.log(`Nuevo producto agregado con ID: ${nuevoProductoId}`);
 
 // Ruta para la vista index.handlebars
 app.get('/', (req, res) => {
@@ -44,17 +52,25 @@ app.get('/realtimeproducts', (req, res) => {
 io.on('connection', (socket) => {
   console.log('Usuario conectado');
 
-// Escucha eventos desde el cliente
-socket.on('productoNuevo', () => {
-  // Actualiza la lista de productos
-  io.emit('actualizarProductos', productManager.getAllProducts());
-  });
+  // Escucha eventos desde el cliente para agregar un nuevo producto
+  socket.on('productoNuevo', (nuevoProducto) => {
+    
+    const nuevoProductoId = productManager.addProduct(nuevoProducto);
+    console.log(`Nuevo producto agregado con ID: ${nuevoProductoId}`);
 
-  socket.on('productoEliminado', () => {
-  // Actualiza la lista de productos 
+  
     io.emit('actualizarProductos', productManager.getAllProducts());
   });
-  
+
+  // Escucha eventos desde el cliente para eliminar un producto
+  socket.on('productoEliminado', (productId) => {
+   
+    productManager.removeProduct(productId);
+
+    // Actualiza la lista de productos 
+    io.emit('actualizarProductos', productManager.getAllProducts());
+  });
+
   // Maneja la desconexión del usuario
   socket.on('disconnect', () => {
     console.log('Usuario desconectado');
