@@ -27,15 +27,7 @@ app.use(express.static(path.join(__dirname, 'public')));
 
 app.use('/api/products', productRouter);
 app.use('/api/carts', cartsRouter);
-// Agregar un nuevo producto al iniciar la aplicación
-const nuevoProducto = {
-  title: 'Nuevo Producto',
-  price: 99.99,
-  thumbnail: 'someUrl.com',
-};
-const nuevoProductoId = productManager.addProduct(nuevoProducto);
-console.log(`Nuevo producto agregado con ID: ${nuevoProductoId}`);
-
+ 
 // Ruta para la vista index.handlebars
 app.get('/', (req, res) => {
   const allProducts = productManager.getAllProducts();
@@ -51,6 +43,8 @@ app.get('/realtimeproducts', (req, res) => {
 // Configuración de WebSocket
 io.on('connection', (socket) => {
   console.log('Usuario conectado');
+  //npm install -g nodemon
+  socket.emit('actualizarProductos',productManager.getAllProducts())
 
   // Escucha eventos desde el cliente para agregar un nuevo producto
   socket.on('productoNuevo', (nuevoProducto) => {
